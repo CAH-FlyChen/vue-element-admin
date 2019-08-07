@@ -130,6 +130,76 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/ids',
+    component: Layout,
+    redirect: '/excel/export-excel',
+    name: 'IdentityServer',
+    meta: {
+      title: '身份认证服务',
+      icon: 'excel'
+    },
+    alwaysShow: true,
+    children: [
+      {
+        path: 'client/index',
+        component: () => import('@/views/ids/client/index'),
+        name: 'identityClient',
+        meta: { title: '客户端' }
+      },
+      {
+        path: 'client/edit/:id',
+        component: () => import('@/views/ids/client/edit'),
+        name: 'EditClient',
+        meta: { title: '编辑客户端', noCache: true, activeMenu: '/ids/client/index' },
+        hidden: true
+      },
+      {
+        path: 'client/create',
+        component: () => import('@/views/ids/client/create'),
+        name: 'CreateClient',
+        meta: { title: '创建客户端', noCache: true, activeMenu: '/ids/client/index' }
+      },
+      {
+        path: 'persisted-grant',
+        component: () => import('@/views/ids/persisted-grant/index'),
+        name: 'persistedGrant',
+        meta: { title: '永久授权' }
+      },
+      {
+        path: 'persisted-grant/edit/:id',
+        component: () => import('@/views/ids/persisted-grant/edit'),
+        name: 'EditPersistedGrant',
+        meta: { title: '编辑永久授权', noCache: true, activeMenu: '/ids/persisted-grant/index' },
+        hidden: true
+      },
+      {
+        path: 'api-reource',
+        component: () => import('@/views/ids/api-resource/index'),
+        name: 'apiResource',
+        meta: { title: 'API资源' }
+      },
+      {
+        path: 'api-resource/edit/:id',
+        component: () => import('@/views/ids/api-resource/edit'),
+        name: 'EditPersistedGrant',
+        meta: { title: '编辑API资源', noCache: true, activeMenu: '/ids/api-resource/index' },
+        hidden: true
+      }
+      // {
+      //   path: 'user',
+      //   component: () => import('@/views/identityserver/user'),
+      //   name: 'identityUser',
+      //   meta: { title: '用户' }
+      // },
+      // {
+      //   path: 'role',
+      //   component: () => import('@/views/identityserver/role'),
+      //   name: 'identityRole',
+      //   meta: { title: '角色' }
+      // }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',
