@@ -160,6 +160,7 @@
             <svg-icon icon-class="jiqiren" class-name="icon-size" @click="onClientCredentialsClicked" />
             <div style="padding: 14px;">
               <span> <b>机器对机器的通信</b>
+                ClientCredentials
                 该模式的适用场景为服务器与服务器之间的通信。
                 比如对于一个电子商务网站，将订单和物流系统分拆为两个服务分别部署
               </span>

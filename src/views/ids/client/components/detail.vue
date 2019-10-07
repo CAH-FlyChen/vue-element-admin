@@ -10,10 +10,11 @@
         <el-button v-loading="loading" style="margin-left: 10px;" type="success" @click="submitForm">
           Publish
         </el-button>
-        <el-button v-loading="loading" type="warning" @click="draftForm">
-          Draft
+        <el-button v-loading="loading" type="warning" @click="onSaveForm">
+          Save
         </el-button>
       </sticky>
+
       <div class="createPost-main-container">
         <el-tabs :tab-position="right">
           <el-tab-pane label="Basic Info">
@@ -31,7 +32,7 @@
                     <el-switch v-model="postForm.enabled" active-color="#13ce66" inactive-color="#ff4949" />
                   </el-form-item>
 
-                  <el-form-item class="postInfo-container-item" label="ClientId">
+                  <el-form-item v-if="isEdit==false" class="postInfo-container-item" label="ClientId">
                     <label slot="label">
                       ClientId <el-tooltip effect="dark" content="Unique ID of the client" placement="top">
                         <i class="el-icon-info" />
@@ -39,7 +40,6 @@
                     </label>
                     <el-input v-model="postForm.clientId" placeholder="" />
                   </el-form-item>
-
                   <el-form-item class="postInfo-container-item" label="Require Client Secret">
                     <label slot="label">
                       Require Client Secret <el-tooltip effect="dark" content="Specifies whether this client needs a secret to request tokens from the token endpoint (defaults to true)" placement="top">
@@ -189,18 +189,26 @@
                             style="margin-left:5px"
                             closable
                           >
-                            {{ tag.grantType }}
+                            {{ tag.grantType+"ccccc" }}
                           </el-tag>
                         </div>
                         <div v-else>
-                          <el-tag
+                          {{ postForm.AllAllowedGrantTypes }}
+                          <el-checkbox-group v-model="postForm.allowedGrantTypes" @change="handleCheckedAllowedGrantTypesChange">
+                            <el-checkbox v-for="item in postForm.allAllowedGrantTypes" :key="item.code" :label="item.name">{{ item.name }}</el-checkbox>
+                          </el-checkbox-group>
+                          <!-- <el-checkbox v-model="checked">授权码模式（authorization code）</el-checkbox> -->
+                          <!-- <el-checkbox v-model="checked">简化模式（implicit）</el-checkbox>
+                          <el-checkbox v-model="checked">密码模式（resource owner password credentials）</el-checkbox>
+                          <el-checkbox v-model="checked">客户端模式（client credentials）</el-checkbox> -->
+                          <!-- <el-tag
                             v-for="tag in postForm.allowedGrantTypes"
                             :key="tag"
                             style="margin-left:5px"
                             closable
                           >
-                            {{ tag }}
-                          </el-tag>
+                            {{ tag+"dddd" }}
+                          </el-tag> -->
                         </div>
                       </el-col>
                     </el-row>
@@ -673,7 +681,13 @@ const defaultForm = {
   allowOfflineAccess: true,
   allowedGrantTypes: [],
   clientName: '测试',
-  description: '描述内容'
+  description: '描述内容',
+  allAllowedGrantTypes: [
+    { 'code': 'AuthorizationCode', 'name': '授权码模式' },
+    { 'code': 'Implicit', 'name': '简化模式' },
+    { 'code': 'ResourceOwnerPasswordCredentials', 'name': '密码模式' },
+    { 'code': 'ClientCredentials', 'name': '客户端模式' }
+  ]
 }
 
 export default {
@@ -753,13 +767,16 @@ export default {
       this.fetchData(id)
     } else {
       console.log('not edit mode')
-      const type = this.$route.params && this.$route.params.type
+      // const type = this.$route.params && this.$route.params.type
       this.postForm = Object.assign({}, defaultForm)
-      if (type === 'resource_owner') {
-        this.postForm.allowedGrantTypes = ['aaa', 'bbbb']
-      } else {
-        this.postForm.allowedGrantTypes = ['dddd', 'eeee']
-      }
+      console.log(this.postForm)
+      this.postForm.allowedGrantTypes = ['授权码模式']
+      // this.postForm.AllAllowedGrantTypes = ['001', '002', '003']
+      // if (type === 'resource_owner') {
+      //   this.postForm.allowedGrantTypes = ['001', '002']
+      // } else {
+      //   this.postForm.allowedGrantTypes = ['001', '002']
+      // }
     }
 
     // Why need to make a copy of this.$route here?
@@ -813,7 +830,8 @@ export default {
         }
       })
     },
-    draftForm() {
+    onSaveForm() {
+      debugger
       if (this.postForm.content.length === 0 || this.postForm.title.length === 0) {
         this.$message({
           message: '请填写必要的标题和内容',
